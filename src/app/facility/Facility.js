@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 class Facility extends Component {
 
   render() {  
-    const fac = this.props.facility;
+    const fac = this.props.facility.original;
     const divStyle = {
         
     }

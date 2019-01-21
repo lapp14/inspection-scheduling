@@ -1,11 +1,5 @@
-from flask_cors import CORS
-
-import os, sys, datetime, traceback
-import math
+import os, sys, datetime, traceback, math, pyodbc, json
 import pandas as pd
-import pyodbc
-import json
-
 from flask import Flask, request, jsonify
 
 import config
@@ -13,8 +7,8 @@ import config
 app = Flask(__name__)
 
 # allow cross origin for dev purposes
-CORS(app) 
-
+from flask_cors import CORS
+CORS(app)
 
 sql_conn = pyodbc.connect(config.SQL_CONNECTION_STRING)
 

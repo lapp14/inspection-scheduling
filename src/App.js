@@ -3,8 +3,8 @@ import axios from 'axios';
 import './App.css';
 
 import ReactTable from "react-table";
-import InspectionInterval from './InspectionInterval';
-import Facility from './Facility';
+import InspectionInterval from './app/interval/InspectionInterval';
+import Facility from './app/facility/Facility';
 import "react-table/react-table.css";
 
 class App extends Component {
@@ -71,6 +71,7 @@ class App extends Component {
             columns={[
               {
                 Header: 'Facility',
+                accessor: 'FacilityName',
                 Cell: row => <Facility facility={row}/>
               },
               {

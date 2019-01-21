@@ -24,9 +24,10 @@ class InspectionInterval extends Component {
 
     return (
         <div style={divStyle}>
-          {intervals.map((interval, i) => {
-            interval.Months.map((month, j) => <IntervalMonth interval={interval} month={month} key={j} />)          
-          })}
+          {intervals.map((interval, i) => (
+              <div key={i}>{interval.Months}</div>
+            )          
+          )}
         </div>        
     )
   }
