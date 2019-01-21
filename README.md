@@ -1,3 +1,24 @@
+# Inspection Scheduling
+The backend is written in Python using Flask. It is a REST api to connect to the databases and serves the scheduling data to the front end via JSON. 
+
+The front end uses React and Axios to hit the api endpoints.
+
+# REST api
+To set up the rest server, set up the configuration
+- Rename the config template `_config.py` to `config.py`
+- Fill in all variables so the app can connect to a database
+  - NOTE: For security purposes, `config.py` is not committed to source control.
+
+To start up the REST server, cd to the `./scheduling` folder. Run `flask run` to start the server.
+
+# Database
+This app relies on a database housing certain stored procedures that are set up to hit the main production database.
+
+The source for these stored procedures is located in `./scheduling/sql`
+
+# React Front-end
+Default docs from Create React App:
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
