@@ -7,8 +7,8 @@ sql_conn = None
 
 """Establish connection to the SQL Server database"""
 def connect():
+	print('reconnecting')	
 	try:
-		print('reconnecting')
 		global sql_conn
 		sql_conn = pyodbc.connect(config.SQL_CONNECTION_STRING)
 	except Exception as err:
@@ -16,25 +16,27 @@ def connect():
 
 
 """Executes a sql statement through an active `sql_conn` to the SQL Server database
-    Returns a <dict> of objects
+    Returns a DataFrame with results
 """
-def execute_query(query):	
-	try:
-		result = pd.read_sql(query, sql_conn).head(10).to_dict(orient='records')
-	except Exception as err:
-		result = jsonify({'error': 'error'})
-		traceback.print_tb(err.__traceback__)
-
-	return result
+def execute_query(query):
+	for retry in range(3):
+		try:
+			result = pd.read_sql(query, sql_conn)
+			return result
+		except Exception as err:
+			print('execute_query failed')
+			connect()
+			
+	print(traceback.print_tb(err.__traceback__))
+	return jsonify({'error': 'execute_query failed max number of times'})
 
 
 """ Executes the schedulingFacilityOverview stored procedure.
      Returns a <dict> of Facility objects
 """
 def get_facilities(year):
-	connect()
 	query = "EXEC [sp_schedulingFacilityOverview] @YEAR = {}".format(year)
-	result = execute_query(query)
+	result = execute_query(query).head(10).to_dict(orient='records')
 	
 	if not isinstance(result, (list,)):
 		print('ERROR: get_facilities failed')
@@ -49,7 +51,7 @@ def get_facilities(year):
 """	
 def get_facility_inspections(facId, year):
 	query = "EXEC [sp_schedulingQueryInspections] @FACILITY_ID = '{}', @YEAR = {}".format(facId, year)
-	return execute_query(query)
+	return execute_query(query).to_dict(orient='records')
  
 
 """ Calculates the completion rate for a set of facilities. Splits the months open for each facility
