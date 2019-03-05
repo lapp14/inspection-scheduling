@@ -4,23 +4,48 @@ class IntervalMonth extends Component {
 
   render() {
     const i = this.props.month;
-    const bg = this.props.interval.Complete === true ? '#80ff80' : '#ff471a'
-    const margin = (i - 1) * 40 + 'px'
+    let bg = '#999999' //closed
+    
+    if(this.props.complete === true) {
+      bg = '#80ff80'
+    } else if(this.props.complete === false) {
+      bg = '#ff471a'
+    }     
 
     const divStyle = {
-        width:   '40px',
-        height:  '40px',
-        zIndex:  '100',
-        position: 'absolute',
-        display: 'inline-block',
-        background: `${bg}`,
-        left: `${margin}`,
-        top: 0
+      fontSize:   '0.8em',
+      textAlign:  'center',
+      justifyContent: 'center',
+      width:      '40px',
+      height:     '40px',
+      padding:    '2px',
+      zIndex:     '100',
+      display:    'flexbox',
+      background: `${bg}`,
+      order:      `${i}`
+    }
+    
+    const getMonthName = (monthNumber) => {
+      switch(monthNumber) {
+        case 1:  return 'Jan'; 
+        case 2:  return 'Feb'; 
+        case 3:  return 'Mar'; 
+        case 4:  return 'Apr'; 
+        case 5:  return 'May'; 
+        case 6:  return 'Jun'; 
+        case 7:  return 'Jul'; 
+        case 8:  return 'Aug'; 
+        case 9:  return 'Sep'; 
+        case 10: return 'Oct'; 
+        case 11: return 'Nov'; 
+        case 12: return 'Dec'; 
+        default: return null;
+      }
     }
 
     return (
         <div style={divStyle}>
-          {i}
+          <span>{getMonthName(i)}</span>
         </div>        
     )
   }

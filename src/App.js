@@ -3,7 +3,7 @@ import axios from 'axios';
 import './App.css';
 
 import ReactTable from "react-table";
-import InspectionInterval from './app/interval/InspectionInterval';
+import FacilityIntervals from './app/interval/FacilityIntervals';
 import Facility from './app/facility/Facility';
 import "react-table/react-table.css";
 
@@ -18,15 +18,15 @@ class App extends Component {
     }
   }
 
-  getData(year) {
-    axios.get(`http://localhost:5000/completion/?year={year}`)
+  getData(year, category) {
+    axios.get(`http://localhost:5000/completion/?year=${year}&category=${category}`)
       .then( (response) => {
         this.setState({data: response.data});
       })
   }
 
   componentDidMount() {
-    this.getData(2018)
+    this.getData(2019, 'General Food')
   }
  /* <ReactTable
   data={this.state.data.Facilities}
@@ -77,7 +77,7 @@ class App extends Component {
               {
                 Header: 'Inspections',
                 accessor: 'InspectionIntervals',
-                Cell: row => <InspectionInterval intervals={row}/>
+                Cell: row => <FacilityIntervals intervals={row.original.InspectionIntervals}/>
               }
             ]}
           />      
