@@ -70,7 +70,7 @@ def calculate_completion(year, category):
 	for row in dict:
 		facility_calculate_seasonality(row)
 		
-		monthsOpen = row['MonthsOpen'];  
+		monthsOpen = row['Open']['Months'];  
 		row['InspectionIntervals'] = []		
 		freq = row['Freq']
 		
@@ -78,8 +78,8 @@ def calculate_completion(year, category):
 			freq = 360
 		
 		months            = freq / 30
-		intervals         = math.ceil(len(row['MonthsOpen']) / months)
-		monthsPerInterval = math.floor(len(row['MonthsOpen']) / intervals)
+		intervals         = math.ceil(len(monthsOpen) / months)
+		monthsPerInterval = math.floor(len(monthsOpen) / intervals)
 		facId             = row['FacilityId']
 		
 		ins = get_facility_inspections(facId, year)
@@ -134,6 +134,8 @@ def calculate_completion(year, category):
 	 Pass a Facility object
 """
 def facility_calculate_seasonality(facility):
+	facility['Open'] = {}
+
 	#calculate seasonality
 	if facility['Seasonality'] == 'Seasonal':
 		months = []		
@@ -147,6 +149,11 @@ def facility_calculate_seasonality(facility):
 			i = (x % 12) + 1            
 			months.append(i)
 		
-		facility['MonthsOpen'] = months
+		facility['Open']['OpenFrom'] = months[0]
+		facility['Open']['OpenTo']   = months[len(months) - 1]
+		months.sort()
+		facility['Open']['Months']   = months
 	else:
-		facility['MonthsOpen'] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+		facility['Open']['OpenFrom'] = 1
+		facility['Open']['OpenTo']   = 12
+		facility['Open']['Months']   = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
