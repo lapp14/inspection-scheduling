@@ -20,12 +20,17 @@ SELECT
 	DATEPART(m, ins.StartDateTime) AS 'Month',
 	ins.IsCompliance,
 	ins.InspectorId,
+	phi.LastName + ', ' + phi.FirstName AS 'Inspector',
+	phi.Username AS 'InspectorUsername',
 	itp.Description AS 'InspectionType'
 
 FROM	[HedgehogNiagara].dbo.[Inspection] ins
 
 JOIN	[HedgehogNiagara].dbo.[InspectionType] itp
 	ON	ins.InspectionTypeId = itp.Id
+
+JOIN	[HedgehogNiagara].dbo.[User] phi
+	ON	ins.InspectorId = phi.Id
 
 WHERE
 	ins.FacilityId = @FACILITY_ID
