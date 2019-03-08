@@ -25,6 +25,7 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+/scheduling/.cache
 
 #config
 /scheduling/config.py
