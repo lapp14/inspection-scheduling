@@ -40,5 +40,6 @@ ORDER BY
 	ins.StartDateTime
 GO
 
+
 GRANT EXECUTE ON dbo.sp_schedulingQueryInspections TO hh_reader
 GO
