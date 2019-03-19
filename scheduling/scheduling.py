@@ -2,8 +2,8 @@ import os, sys, datetime, traceback, math, pyodbc, json, pandas as pd
 from flask import Flask, request, jsonify
 
 import config
-sql_conn = None
 
+sql_conn = None
 
 """Establish connection to the SQL Server database"""
 def connect():
@@ -35,16 +35,26 @@ def execute_query(query):
 """ Executes the schedulingFacilityOverview stored procedure.
      Returns a <dict> of Facility objects
 """
-def get_facilities(year, category):
-	print("get_facilities year: {}, category: {}".format(year, category))
-	query = "EXEC [sp_schedulingFacilityOverview] @YEAR = {}, @CATEGORY = '{}'".format(year, category)
+def get_facilities(year, category, fac_type, inspector, risk, seasonality, top):	
+	query = "EXEC [sp_schedulingFacilityOverview] \
+				@YEAR = {} \
+				,@CATEGORY = '{}' \
+				,@TYPE = '{}' \
+				,@INSPECTOR = '{}' \
+				,@RISK = {} \
+				,@SEASONALITY = '{}' \
+			".format(year, category, fac_type, inspector, risk, seasonality)	
+	
 	result = execute_query(query)
 	
-	if not isinstance(result, pd.DataFrame):
-		print('ERROR: get_facilities failed')
-		raise
+	#if not isinstance(result, pd.DataFrame):
+	#	print('ERROR: get_facilities failed')
+	#	raise
 	
-	return result.head(10).to_dict(orient='records')
+	if top > 0:
+		result = result.head(top)
+
+	return result.to_dict(orient='records')
  
 
 """ Executes the schedulingQueryInspections stored procedure. Returns all inspections
@@ -60,12 +70,13 @@ def get_facility_inspections(facId, year):
 	 into a number of "inspection intervals" and places the inspections within each interval.
 	 Returns a <dict> of facilities with completion rates and metadata
 """
-def calculate_completion(year, category):
-	dict = get_facilities(year, category)
-
-	num_intervals = 0
+def calculate_completion(year, category, fac_type, inspector, risk, seasonality, top):
+	today 		  		   = datetime.datetime.today()
+	num_intervals 		   = 0
 	num_intervals_complete = 0
-	num_inspections = 0
+	num_inspections 	   = 0
+
+	dict = get_facilities(year, category, fac_type, inspector, risk, seasonality, top)
 
 	for row in dict:
 		facility_calculate_seasonality(row)
